@@ -68,11 +68,18 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-zinc-900 flex flex-col p-4 text-white">
+    <main className="min-h-screen bg-pink-50 flex flex-col p-4 text-white">
   {/* Header */}
   <div className="flex justify-between items-center mb-4">
-    <div className="text-2xl font-bold text-pink-500">EA</div>
-    <div className="text-xs text-gray-300">By JP 🎧</div>
+    <img src="/Black.png" alt="Logo EA" className="w-12 h-auto" />
+    <div className="flex items-center space-x-2 text-xs text-gray-300">
+    <span>By Ojpdias</span>
+    <img
+      src="/jp.jpeg"
+      alt="JP avatar"
+      className="w-6 h-6 rounded-full object-cover"
+    />
+  </div>
   </div>
 
   {/* Área da arte */}
@@ -82,7 +89,7 @@ export default function Home() {
   </div>
 
   {/* Player */}
-  <div className="mt-4 self-end bg-pink-700 text-white p-3 rounded-lg w-fit shadow-lg flex items-center space-x-4">
+  <div className="mt-4 self-end bg-gradient-to-b from-slate-900 to-emerald-400 text-white p-3 rounded-lg w-fit shadow-lg flex items-center space-x-4">
     {track ? (
       <>
         <img src={track.item.album.images[0].url} className="w-12 h-12 rounded" alt="Capa do álbum" />
