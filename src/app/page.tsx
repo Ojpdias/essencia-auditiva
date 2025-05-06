@@ -28,7 +28,7 @@ export default function Home() {
         <div className="flex items-center space-x-2 text-xs text-gray-300">
           <span>By Ojpdias</span>
           <img
-            src="/jp.jpg"
+            src="/jp.jpeg"
             alt="JP avatar"
             className="w-6 h-6 rounded-full object-cover"
           />
