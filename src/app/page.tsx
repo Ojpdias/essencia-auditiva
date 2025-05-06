@@ -41,7 +41,7 @@ export default function Home() {
       </div>
 
       {/* Player ou Login */}
-      <div className="mt-4 self-end w-full max-w-md">
+      <div className="mt-4 self-end w-fit max-w-full">
         <SpotifyPlayer token={token} />
       </div>
     </main>
