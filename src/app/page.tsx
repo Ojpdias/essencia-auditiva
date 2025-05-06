@@ -12,46 +12,59 @@ export default function Home() {
 
     if (token) {
       localStorage.setItem('spotify_token', token)
-      window.history.replaceState({}, document.title, '/') // Limpa o token da URL
+      window.history.replaceState({}, document.title, '/')
     } else {
       token = localStorage.getItem('spotify_token') || ''
     }
 
     if (!token) return
 
-    // 1º: pegar a música atual
-    fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Erro ao buscar música atual')
-        return res.json()
+    const fetchTrack = () => {
+      fetch('https://api.spotify.com/v1/me/player', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((data) => {
-        setTrack(data)
-        const trackId = data?.item?.id
-
-        // 2º: pegar valence e energy com o ID da música
-        return fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        .then((res) => {
+          if (res.status === 204) throw new Error('Sem música tocando')
+          if (!res.ok) throw new Error('Erro na API')
+          return res.json()
         })
-      })
-      .then((res) => {
-        if (!res.ok) throw new Error('Erro ao buscar features da música')
-        return res.json()
-      })
-      .then((features) => {
-        setValence(features.valence)
-        setEnergy(features.energy)
-      })
-      .catch((err) => {
-        console.error(err)
-        setTrack(null)
-      })
+        .then((data) => {
+          if (!data || !data.item) {
+            setTrack(null)
+            return Promise.resolve(null) // ← evita erro de tipo
+          }
+
+          setTrack(data)
+          const trackId = data.item.id
+
+          return fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        })
+        .then((res) => {
+          if (res && res.ok) return res.json()
+          return null
+        })
+        .then((features) => {
+          if (features) {
+            setValence(features.valence)
+            setEnergy(features.energy)
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+          setTrack(null)
+        })
+    }
+
+    fetchTrack()
+    const interval = setInterval(fetchTrack, 5000)
+
+    return () => clearInterval(interval)
   }, [])
 
   return (
