@@ -1,3 +1,4 @@
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
@@ -15,7 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Buscar resultado no Genius
     const searchUrl = `https://api.genius.com/search?q=${encodeURIComponent(track + ' ' + artist)}`
     const searchRes = await axios.get(searchUrl, {
       headers: {
@@ -34,7 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const songUrl = song.result.url
 
-    // Requisição com User-Agent para contornar bloqueios
     const lyricsPage = await axios.get(songUrl, {
       headers: {
         'User-Agent':
@@ -43,8 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     const html = lyricsPage.data as string
-
-    // Scraping com fallback para layout novo e antigo
     let match = html.match(/<div[^>]+data-lyrics-container[^>]*>([\s\S]*?)<\/div>/g)
 
     if (!match || match.length === 0) {
