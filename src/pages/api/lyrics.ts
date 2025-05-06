@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // 1. Buscar resultado no Genius
+    // Buscar resultado no Genius
     const searchUrl = `https://api.genius.com/search?q=${encodeURIComponent(track + ' ' + artist)}`
     const searchRes = await axios.get(searchUrl, {
       headers: {
@@ -34,14 +34,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const songUrl = song.result.url
 
-    // 2. Scraping da página do Genius
-    const lyricsPage = await axios.get(songUrl)
+    // Requisição com User-Agent para contornar bloqueios
+    const lyricsPage = await axios.get(songUrl, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+      },
+    })
+
     const html = lyricsPage.data as string
 
-    const match = html.match(/<div[^>]+data-lyrics-container[^>]*>([\s\S]*?)<\/div>/g)
+    // Scraping com fallback para layout novo e antigo
+    let match = html.match(/<div[^>]+data-lyrics-container[^>]*>([\s\S]*?)<\/div>/g)
 
     if (!match || match.length === 0) {
-      return res.status(200).json({ lyrics: '[DEBUG] Não encontrou letra no HTML da página do Genius' })
+      const oldMatch = html.match(/<div class="lyrics">([\s\S]*?)<\/div>/)
+      if (oldMatch && oldMatch[1]) {
+        const raw = oldMatch[1].replace(/<[^>]+>/g, '').trim()
+        return res.status(200).json({ lyrics: raw })
+      }
+
+      return res.status(404).json({ error: 'Não foi possível extrair a letra do Genius' })
     }
 
     const raw = match
