@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 export default function SpotifyPlayer({ token }: { token: string }) {
   const [track, setTrack] = useState<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [lyrics, setLyrics] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchTrack = () => {
@@ -30,6 +31,23 @@ export default function SpotifyPlayer({ token }: { token: string }) {
     const interval = setInterval(fetchTrack, 5000)
     return () => clearInterval(interval)
   }, [token])
+
+  useEffect(() => {
+    if (!track) return
+
+    const fetchLyrics = async () => {
+      try {
+        const res = await fetch(`/api/lyrics?track=${encodeURIComponent(track.item.name)}&artist=${encodeURIComponent(track.item.artists[0].name)}`)
+        const data = await res.json()
+        if (data.lyrics) setLyrics(data.lyrics)
+        else setLyrics('Letra não encontrada.')
+      } catch (err) {
+        setLyrics('Erro ao buscar letra.')
+      }
+    }
+
+    fetchLyrics()
+  }, [track])
 
   if (!track) {
     return (
@@ -59,6 +77,13 @@ export default function SpotifyPlayer({ token }: { token: string }) {
           </p>
         </div>
       </div>
+  
+      {lyrics && (
+        <pre className="mt-4 whitespace-pre-wrap text-sm text-white bg-black/30 p-2 rounded">
+          {lyrics}
+        </pre>
+      )}
     </div>
   )
+  
 }
