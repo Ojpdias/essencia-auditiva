@@ -68,24 +68,34 @@ export default function Home() {
   }, [])
 
   return (
-    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>Essência Auditiva 🎶</h1>
+    <main className="min-h-screen bg-zinc-900 flex flex-col p-4 text-white">
+  {/* Header */}
+  <div className="flex justify-between items-center mb-4">
+    <div className="text-2xl font-bold text-pink-500">EA</div>
+    <div className="text-xs text-gray-300">By JP 🎧</div>
+  </div>
 
-      <a href="/api/login" style={{ display: 'inline-block', marginBottom: '1rem' }}>
-        Login com Spotify
-      </a>
+  {/* Área da arte */}
+  <div className="flex-1 bg-pink-50 rounded-xl flex items-center justify-center">
+    {/* Aqui entra o canvas ou visual dinâmico */}
+    <p className="text-zinc-400 italic">A arte aparecerá aqui em tempo real...</p>
+  </div>
 
-      {track ? (
+  {/* Player */}
+  <div className="mt-4 self-end bg-pink-700 text-white p-3 rounded-lg w-fit shadow-lg flex items-center space-x-4">
+    {track ? (
+      <>
+        <img src={track.item.album.images[0].url} className="w-12 h-12 rounded" alt="Capa do álbum" />
         <div>
-          <h2>{track.item.name}</h2>
-          <p>{track.item.artists.map((a: any) => a.name).join(', ')}</p>
-          <img src={track.item.album.images[0].url} width={200} style={{ borderRadius: 8 }} />
-          <p><strong>Valence:</strong> {valence}</p>
-          <p><strong>Energy:</strong> {energy}</p>
+          <p className="text-sm font-medium">{track.item.name}</p>
+          <p className="text-xs">{track.item.artists.map((a: any) => a.name).join(', ')}</p>
         </div>
-      ) : (
-        <p>Nenhuma faixa tocando agora</p>
-      )}
-    </main>
+      </>
+    ) : (
+      <p className="text-sm">Nenhuma faixa tocando</p>
+    )}
+  </div>
+</main>
+
   )
 }
