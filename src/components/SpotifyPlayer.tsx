@@ -36,7 +36,7 @@ export default function SpotifyPlayer({ token }: { token: string }) {
       <div className="bg-gradient-to-b from-slate-900 to-emerald-400 text-white p-4 rounded-lg w-full max-w-md shadow-lg text-center">
         <a
           href="/api/login"
-          className="font-medium px-4 py-2 block hover:underline transition-colors"
+          className="font-medium px-4 py-2 block hover:underline transition-colors w-full"
         >
           Conectar com Spotify
         </a>
