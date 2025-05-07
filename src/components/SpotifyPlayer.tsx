@@ -7,6 +7,7 @@ export default function SpotifyPlayer({ token }: { token: string }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [lyrics, setLyrics] = useState<string | null>(null)
 
+  // Buscar a música atual do Spotify
   useEffect(() => {
     const fetchTrack = () => {
       fetch('https://api.spotify.com/v1/me/player', {
@@ -32,12 +33,16 @@ export default function SpotifyPlayer({ token }: { token: string }) {
     return () => clearInterval(interval)
   }, [token])
 
+  // Buscar a letra da música com lyrics.ovh
   useEffect(() => {
     if (!track) return
 
     const fetchLyrics = async () => {
+      const nome = track.item.name
+      const artista = track.item.artists[0].name
+
       try {
-        const res = await fetch(`/api/lyrics?track=${encodeURIComponent(track.item.name)}&artist=${encodeURIComponent(track.item.artists[0].name)}`)
+        const res = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artista)}/${encodeURIComponent(nome)}`)
         const data = await res.json()
         if (data.lyrics) setLyrics(data.lyrics)
         else setLyrics('Letra não encontrada.')
@@ -77,7 +82,7 @@ export default function SpotifyPlayer({ token }: { token: string }) {
           </p>
         </div>
       </div>
-  
+
       {lyrics && (
         <pre className="mt-4 whitespace-pre-wrap text-sm text-white bg-black/30 p-2 rounded">
           {lyrics}
@@ -85,5 +90,4 @@ export default function SpotifyPlayer({ token }: { token: string }) {
       )}
     </div>
   )
-  
 }
