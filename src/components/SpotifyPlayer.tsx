@@ -6,8 +6,10 @@ export default function SpotifyPlayer({ token }: { token: string }) {
   const [track, setTrack] = useState<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [lyrics, setLyrics] = useState<string | null>(null)
+  const [lines, setLines] = useState<string[]>([])
+  const [currentLineIndex, setCurrentLineIndex] = useState(0)
 
-  // Buscar a música atual do Spotify
+  // Buscar faixa atual
   useEffect(() => {
     const fetchTrack = () => {
       fetch('https://api.spotify.com/v1/me/player', {
@@ -33,7 +35,7 @@ export default function SpotifyPlayer({ token }: { token: string }) {
     return () => clearInterval(interval)
   }, [token])
 
-  // Buscar a letra da música com lyrics.ovh
+  // Buscar letra com lyrics.ovh
   useEffect(() => {
     if (!track) return
 
@@ -46,7 +48,7 @@ export default function SpotifyPlayer({ token }: { token: string }) {
         const data = await res.json()
         if (data.lyrics) setLyrics(data.lyrics)
         else setLyrics('Letra não encontrada.')
-      } catch (err) {
+      } catch {
         setLyrics('Erro ao buscar letra.')
       }
     }
@@ -54,6 +56,35 @@ export default function SpotifyPlayer({ token }: { token: string }) {
     fetchLyrics()
   }, [track])
 
+  // Processar linhas da letra
+  useEffect(() => {
+    if (lyrics) {
+      const clean = lyrics.split('\n').filter((line) => line.trim() !== '')
+      setLines(clean)
+      setCurrentLineIndex(0)
+    }
+  }, [lyrics])
+
+  // Sincronizar linhas com progress_ms
+  useEffect(() => {
+    if (!track || lines.length === 0) return
+
+    const totalMs = track.item.duration_ms
+    const totalLines = lines.length
+    const msPerLine = totalMs / totalLines
+
+    const updateLine = () => {
+      const currentMs = track.progress_ms
+      const lineIndex = Math.floor(currentMs / msPerLine)
+      setCurrentLineIndex(lineIndex)
+    }
+
+    updateLine()
+    const interval = setInterval(updateLine, 1000)
+    return () => clearInterval(interval)
+  }, [track, lines])
+
+  // Render sem faixa
   if (!track) {
     return (
       <div className="bg-gradient-to-b from-slate-900 to-emerald-400 text-white p-4 rounded-lg w-full max-w-md shadow-lg text-center">
@@ -83,10 +114,27 @@ export default function SpotifyPlayer({ token }: { token: string }) {
         </div>
       </div>
 
+      {/* Letra sincronizada com transição suave */}
       {lyrics && (
-        <pre className="mt-4 whitespace-pre-wrap text-sm text-white bg-black/30 p-2 rounded">
-          {lyrics}
-        </pre>
+        <div className="mt-6 text-center text-white">
+          <h2 className="text-xs text-white/50 mb-2">🟢 Letra em tempo real</h2>
+          <div className="relative max-h-40 overflow-hidden">
+            <div className="flex flex-col gap-1 transition-transform duration-500 ease-out">
+              {lines
+                .slice(currentLineIndex, currentLineIndex + 4)
+                .map((line, i) => (
+                  <p
+                    key={i}
+                    className={`text-lg md:text-xl transition-opacity duration-300 ${
+                      i === 0 ? 'text-emerald-200 font-bold opacity-100' : 'text-white/70 opacity-80'
+                    }`}
+                  >
+                    {line}
+                  </p>
+                ))}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
