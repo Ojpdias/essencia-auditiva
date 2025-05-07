@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, useRef } from 'react'
 import p5 from 'p5'
 
@@ -23,12 +21,13 @@ export default function CanvasArt({
 
       p.setup = () => {
         p.createCanvas(p.windowWidth, 300)
-        p.background(0)
+        p.background('#f4f4f5') // cor do bg-zinc-100
         p.colorMode(p.HSB)
       }
 
       p.draw = () => {
-        p.background(0, 0.1) // fundo com transparência para rastro suave
+        // fundo com leve rastro transparente sobre o mesmo tom do bg
+        p.background('rgba(244, 244, 245, 0.1)')
 
         const pulse = isPlaying ? Math.sin(p.frameCount * 0.1) * 5 : 1
         const intensity = currentLine.length % 50

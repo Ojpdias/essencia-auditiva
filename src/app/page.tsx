@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import SpotifyPlayer from '@/components/SpotifyPlayer'
-import CanvasArt from '@/components/CanvasArt'
+import dynamic from 'next/dynamic'
+
+const CanvasArt = dynamic(() => import('@/components/CanvasArt'), { ssr: false })
 
 export default function Home() {
   const [token, setToken] = useState('')
@@ -11,7 +13,7 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
-    let tokenFromURL = new URLSearchParams(window.location.search).get('access_token')
+    const tokenFromURL = new URLSearchParams(window.location.search).get('access_token')
 
     if (tokenFromURL) {
       localStorage.setItem('spotify_token', tokenFromURL)
