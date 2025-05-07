@@ -113,29 +113,6 @@ export default function SpotifyPlayer({ token }: { token: string }) {
           </p>
         </div>
       </div>
-
-      {/* Letra sincronizada com transição suave */}
-      {lyrics && (
-        <div className="mt-6 text-center text-white">
-          <h2 className="text-xs text-white/50 mb-2">🟢 Letra em tempo real</h2>
-          <div className="relative max-h-40 overflow-hidden">
-            <div className="flex flex-col gap-1 transition-transform duration-500 ease-out">
-              {lines
-                .slice(currentLineIndex, currentLineIndex + 4)
-                .map((line, i) => (
-                  <p
-                    key={i}
-                    className={`text-lg md:text-xl transition-opacity duration-300 ${
-                      i === 0 ? 'text-emerald-200 font-bold opacity-100' : 'text-white/70 opacity-80'
-                    }`}
-                  >
-                    {line}
-                  </p>
-                ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
