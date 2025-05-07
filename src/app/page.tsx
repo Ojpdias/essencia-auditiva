@@ -31,7 +31,9 @@ export default function Home() {
       <div className="flex justify-between items-center mb-4">
         <img src="/Black.png" alt="Logo EA" className="w-12 h-auto" />
         <div className="flex items-center space-x-2 text-xs text-gray-300">
-          <span>By Ojpdias</span>
+          <span>By Ojpdias
+            Em pausa
+          </span>
           <img src="/jp.jpeg" alt="JP avatar" className="w-6 h-6 rounded-full object-cover" />
         </div>
       </div>
