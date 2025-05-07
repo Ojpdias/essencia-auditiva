@@ -2,7 +2,19 @@
 
 import { useEffect, useState } from 'react'
 
-export default function SpotifyPlayer({ token }: { token: string }) {
+interface SpotifyPlayerProps {
+  token: string
+  onProgress?: (value: number) => void
+  onCurrentLine?: (line: string) => void
+  onIsPlaying?: (playing: boolean) => void
+}
+
+export default function SpotifyPlayer({
+  token,
+  onProgress,
+  onCurrentLine,
+  onIsPlaying,
+}: SpotifyPlayerProps) {
   const [track, setTrack] = useState<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [lyrics, setLyrics] = useState<string | null>(null)
@@ -65,7 +77,7 @@ export default function SpotifyPlayer({ token }: { token: string }) {
     }
   }, [lyrics])
 
-  // Sincronizar linhas com progress_ms
+  // Sincronizar com progress_ms
   useEffect(() => {
     if (!track || lines.length === 0) return
 
@@ -83,6 +95,14 @@ export default function SpotifyPlayer({ token }: { token: string }) {
     const interval = setInterval(updateLine, 1000)
     return () => clearInterval(interval)
   }, [track, lines])
+
+  // Emitir dados para o componente pai (Home)
+  useEffect(() => {
+    if (!track) return
+    onProgress?.(track.progress_ms)
+    onIsPlaying?.(isPlaying)
+    onCurrentLine?.(lines[currentLineIndex] || '')
+  }, [track, isPlaying, currentLineIndex])
 
   // Render sem faixa
   if (!track) {
