@@ -27,7 +27,7 @@ export default function CanvasArt({
 
       p.draw = () => {
         // fundo com leve rastro transparente sobre o mesmo tom do bg
-        p.background('rgba(244, 244, 245, 0.1)')
+        p.background('rgba(39, 39, 42, 0.1)')
 
         const pulse = isPlaying ? Math.sin(p.frameCount * 0.1) * 5 : 1
         const intensity = currentLine.length % 50
