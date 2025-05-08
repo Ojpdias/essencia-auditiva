@@ -26,7 +26,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-zinc-100 flex flex-col p-4 text-white font-sans">
+    <main className="min-h-screen bg-zinc-800 flex flex-col p-4 text-white font-sans">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <img src="/Black.png" alt="Logo EA" className="w-12 h-auto" />
