@@ -21,7 +21,7 @@ export default function CanvasArt({
 
       p.setup = () => {
         p.createCanvas(p.windowWidth, 300)
-        p.background('#f4f4f5') // cor do bg-zinc-100
+        p.background('#27272a') // cor do bg-zinc-100
         p.colorMode(p.HSB)
       }
 

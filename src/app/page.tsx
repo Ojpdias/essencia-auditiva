@@ -37,7 +37,7 @@ export default function Home() {
       </div>
 
       {/* Arte ao vivo */}
-      <div className="flex-1 bg-zinc-100 rounded-xl flex items-center justify-center">
+      <div className="flex-1 bg-zinc-800 rounded-xl flex items-center justify-center">
         <CanvasArt
           isPlaying={isPlaying}
           progress={progress}
